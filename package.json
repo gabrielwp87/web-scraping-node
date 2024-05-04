@@ -1,0 +1,19 @@
+{
+  "name": "web-scraping-node",
+  "version": "1.0.0",
+  "description": "A web scraping full stack page usind node js to a full stack developer intership challenge",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "node --watch --no-warnings server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "express": "^4.19.2",
+    "jsdom": "^24.0.0"
+  }
+}
