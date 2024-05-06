@@ -34,3 +34,9 @@ Considerations:
    - Ensure you handle errors gracefully both on the backend and frontend.
    - Provide clear instructions on how to run the application.
    - The cleaner and more functional the code is, the better.
+
+
+To run:
+```
+node src/index.js
+```
