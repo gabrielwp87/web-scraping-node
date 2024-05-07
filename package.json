@@ -106,18 +106,11 @@
     "xml-name-validator": "^5.0.0",
     "xmlchars": "^2.2.0"
   },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/gabrielwp87/web-scraping-node.git"
-  },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/gabrielwp87/web-scraping-node/issues"
-  },
-  "homepage": "https://github.com/gabrielwp87/web-scraping-node#readme"
+  "license": "ISC"
 }
