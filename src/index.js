@@ -1,3 +1,4 @@
+const fs = require('node:fs')
 const express = require('express')
 const app = express()
 
@@ -5,6 +6,14 @@ const axios = require('axios')
 const { JSDOM } = require("jsdom")
 
 const PORT = 3333
+
+const originalConsoleError = console.error;
+const jsDomCssError = "Error: Could not parse CSS stylesheet";
+console.error = (...params) => {
+  if (!params.find((p) => p.toString().includes(jsDomCssError))) {
+    originalConsoleError(...params);
+  }
+};
 
 
 const getProductUrl = (product_keyword) => `https://www.amazon.com.br/s?k=${product_keyword}`
@@ -21,33 +30,40 @@ async function  getProductInfo(product_keyword) {
       Pragma: 'no-cache',
     },
   });
-  // console.log(data)
-  // s-result-item
+
   const dom = new JSDOM(data)
 
   const $ = (selector) => dom.window.document.querySelector(selector)
 
-  console.log($('.s-product-image-container .s-image').getAttribute('src'))
-
-
-  // const getInfo = (element) => {
-  //   const product_title = $('.s-title-instructions-style .a-text-normal').textContent.trim()
-//   const rating = $('.a-spacing-top-micro .a-icon-alt').textContent.trim()
-//   const number_of_reviews = $('.a-spacing-top-micro .a-size-base').textContent.trim()
-//   const product_image_url = element.querySelector('.a-seection .s-image').getAttribute('src')
-//   return {
-//     product_title,
-//     rating,
-//     number_of_reviews,
-//     product_image_url,
-//   }
-// }<span class="a-size-base s-underline-text">2,994</span>
-
+  // function to get in json 
+  const getInfo = (element) => {
+    const product_title = element.querySelector('.s-title-instructions-style .a-text-normal').textContent.trim()
+    const rating = element.querySelector('.a-spacing-top-micro .a-icon-alt').textContent.trim()
+    const number_of_reviews = element.querySelector('.a-spacing-top-micro .a-size-base').textContent.trim()
+    const product_image_url = element.querySelector('.s-product-image-container .s-image').getAttribute('src')
+    return {
+      product_title,
+      rating,
+      number_of_reviews,
+      product_image_url,
+    }
 }
 
+  // .s-card-container -> is the class that has 1 product and will be used to get all products
+  // and return a Node List with all products
+  // after that it will be used to in each one to get the info requested
+  const offerElements = dom.window.document.querySelectorAll('.s-card-container')
+  const offers = [];
+  offerElements.forEach((element) => {
+    try {
+    offers.push(getInfo(element));
+    }
+    catch {}
+    console.log(offers)
+  });
+  const jsonData = JSON.stringify(offers);
 
-
-
+}
 
 
 getProductInfo("creatina")
