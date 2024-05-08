@@ -5,7 +5,7 @@ const app = express()
 const axios = require('axios')
 const { JSDOM } = require("jsdom")
 
-const PORT = 3333
+const PORT = 3000
 
 const originalConsoleError = console.error;
 const jsDomCssError = "Error: Could not parse CSS stylesheet";
@@ -59,12 +59,41 @@ async function  getProductInfo(product_keyword) {
     offers.push(getInfo(element));
     }
     catch {}
-    console.log(offers)
+    // console.log(offers)
   });
   const jsonData = JSON.stringify(offers);
-
+  return offers
 }
 
 
-getProductInfo("creatina")
-console.log("hi")
+
+
+// Define route to scrape Amazon based on keyword
+app.get('/api/scrape', async (req, res) => {
+  const keyword = req.query.keyword;
+
+  if (!keyword) {
+    return res.status(400).json({ error: 'Keyword parameter is required' });
+  }
+
+  try {
+    const scrapedData = await getProductInfo(keyword);
+    res.json(scrapedData);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to scrape Amazon' });
+  }
+});
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+
+
+
+
+
+
+// getProductInfo("creatina")
+// console.log("hi")
