@@ -1,11 +1,14 @@
-const fs = require('node:fs')
 const express = require('express')
 const app = express()
+const path = require('path')
+
 
 const axios = require('axios')
 const { JSDOM } = require("jsdom")
 
-const PORT = 3000
+const PORT = process.env.PORT || 3000;
+
+// const PORT = 3000
 
 const originalConsoleError = console.error;
 const jsDomCssError = "Error: Could not parse CSS stylesheet";
@@ -61,10 +64,9 @@ async function  getProductInfo(product_keyword) {
     catch {}
     // console.log(offers)
   });
-  const jsonData = JSON.stringify(offers);
+  // const jsonData = JSON.stringify(offers);
   return offers
 }
-
 
 
 
@@ -84,16 +86,14 @@ app.get('/api/scrape', async (req, res) => {
   }
 });
 
-// Start the server
+
+// Confirmation tha the server is running
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 
 
-
-
-
-
-
-// getProductInfo("creatina")
-// console.log("hi")
+// sendFile will go here
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, '/index.html'));
+});
