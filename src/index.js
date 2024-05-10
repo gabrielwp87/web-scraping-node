@@ -1,26 +1,44 @@
 const express = require('express')
 const app = express()
 const path = require('path')
-
+const cors = require('cors')
 
 const axios = require('axios')
 const { JSDOM } = require("jsdom")
 
 const PORT = process.env.PORT || 3000;
+app.use(express.json())
+app.use(cors())
 
-// const PORT = 3000
 
+// to generalize the directory with the static files
+app.use(express.static(__dirname + "/public", {
+  index: false, 
+  immutable: true, 
+  cacheControl: true,
+  maxAge: "30d"
+}));
+
+
+// stop jsdom to print in console when it says it can parse CSS
 const originalConsoleError = console.error;
-const jsDomCssError = "Error: Could not parse CSS stylesheet";
+const jsDomCssError = "Error: Could not parse CSS stylesheet"
 console.error = (...params) => {
   if (!params.find((p) => p.toString().includes(jsDomCssError))) {
-    originalConsoleError(...params);
+    originalConsoleError(...params)
   }
-};
+}
 
 
+// get the url to the product
 const getProductUrl = (product_keyword) => `https://www.amazon.com.br/s?k=${product_keyword}`
 
+/*
+This function will get a keyword from the frontend, and use it to go to make a search at amazon, getting
+the products from the first page of the results. Selecting the title, rating of the product, number of reviews
+and the image url from each of the products.
+Return the data in json that will be used at the frontend.
+*/
 async function  getProductInfo(product_keyword) {
   
   const productUrl = getProductUrl(product_keyword)
@@ -36,9 +54,9 @@ async function  getProductInfo(product_keyword) {
 
   const dom = new JSDOM(data)
 
-  const $ = (selector) => dom.window.document.querySelector(selector)
+  // const $ = (selector) => dom.window.document.querySelector(selector)
 
-  // function to get in json 
+  // function to get the info from each element passed as a parameter, returnin the data as json
   const getInfo = (element) => {
     const product_title = element.querySelector('.s-title-instructions-style .a-text-normal').textContent.trim()
     const rating = element.querySelector('.a-spacing-top-micro .a-icon-alt').textContent.trim()
@@ -61,39 +79,38 @@ async function  getProductInfo(product_keyword) {
     try {
     offers.push(getInfo(element));
     }
-    catch {}
-    // console.log(offers)
-  });
-  // const jsonData = JSON.stringify(offers);
+    catch (error) {
+      console.log(error)
+    }
+  })
   return offers
 }
 
 
-
 // Define route to scrape Amazon based on keyword
 app.get('/api/scrape', async (req, res) => {
-  const keyword = req.query.keyword;
+  const keyword = req.query.keyword
 
   if (!keyword) {
-    return res.status(400).json({ error: 'Keyword parameter is required' });
+    return res.status(400).json({ error: 'Keyword parameter is required' })
   }
 
   try {
-    const scrapedData = await getProductInfo(keyword);
-    res.json(scrapedData);
+    const scrapedData = await getProductInfo(keyword)
+    res.json(scrapedData)
   } catch (error) {
-    res.status(500).json({ error: 'Failed to scrape Amazon' });
+    res.status(500).json({ error: 'Failed to scrape Amazon' })
   }
-});
+})
 
 
 // Confirmation tha the server is running
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`)
 });
 
 
 // sendFile will go here
 app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, '/index.html'));
-});
+  res.sendFile(path.join(__dirname, '/index.html'))
+})

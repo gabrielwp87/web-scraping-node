@@ -17,6 +17,7 @@
     "content-type": "^1.0.5",
     "cookie": "^0.6.0",
     "cookie-signature": "^1.0.6",
+    "cors": "^2.8.5",
     "cssstyle": "^4.0.1",
     "data-urls": "^5.0.0",
     "debug": "^2.6.9",
@@ -106,7 +107,6 @@
     "xml-name-validator": "^5.0.0",
     "xmlchars": "^2.2.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
